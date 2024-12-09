@@ -3,9 +3,29 @@ import './App.css';
 
 function App() {
   const [mode, setMode] = useState('text');
+  const [textInput, setTextInput] = useState('');
+  const [question, setQuestion] = useState('');
+  const [response, setResponse] = useState('');
 
   const handleToggle = () => {
     setMode(mode === 'text' ? 'video' : 'text');
+  };
+
+  const handleSubmit = async () => {
+    if (textInput && question) {
+      const response = await fetch('http://127.0.0.1:8080/answer_query', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt: `${textInput}\n${question}`,
+        }),
+      });
+
+      const data = await response.json();
+      setResponse(data.response);
+    }
   };
 
   return (
@@ -47,6 +67,8 @@ function App() {
                 type="text" 
                 placeholder="Enter your text" 
                 className="custom-input"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
               />
             </div>
             <div className="input-group">
@@ -55,9 +77,17 @@ function App() {
                 type="text" 
                 placeholder="Enter your question" 
                 className="custom-input"
+                value={question}
+                onChange={(e) => setQuestion(e.target.value)}
               />
             </div>
-            <button className="submit-btn">Submit</button>
+            <button className="submit-btn" onClick={handleSubmit}>Submit</button>
+            {response && (
+              <div className="response">
+                <h3>Response:</h3>
+                <p>{response}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
