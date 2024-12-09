@@ -33,7 +33,7 @@ body {
 .app-title {
   text-align: center;
   margin-bottom: 30px;
-  background: linear-gradient(45deg, #00c6ff, #0072ff);
+  background: linear-gradient(45deg, #00d9ff, #0091ff);
   background-clip: text;
   color: transparent;
   font-size: 28px;
@@ -129,7 +129,7 @@ label {
   background-clip: text;
   border: 2px solid #00c6ff;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
