@@ -88,7 +88,7 @@ class VideoProcessor:
         if self.use_groq:
             response = self.groq_client.chat.completions.create(
                 messages=[
-                    {"role": "system", "content": "You are a helpful assistant that provides human answers that sound conversational and have a minor grammatical issue based off text and video transcripts."},
+                    {"role": "system", "content": "Use whatever text or transcript is provided to answer questions in a human way only using context from the media source and slight outside knowledge to output a human response that may have some minor unnoticeable grammatical issues."},
                     {"role": "user", "content": prompt}
                 ],
                 model="mixtral-8x7b-32768",
