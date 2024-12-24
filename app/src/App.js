@@ -1,31 +1,49 @@
 import React, { useState } from 'react';
 import './App.css';
+import axios from 'axios';
 
 function App() {
   const [mode, setMode] = useState('text');
   const [textInput, setTextInput] = useState('');
+  const [videoUrl, setVideoUrl] = useState('');
   const [question, setQuestion] = useState('');
-  const [response, setResponse] = useState('');
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    setResponse(null);
+    setError('');
+
+    try {
+      const data =
+        mode === 'text'
+          ? { text: textInput, question }
+          : { video_url: videoUrl, question };
+
+      const endpoint =
+        mode === 'text'
+          ? 'http://127.0.0.1:8080/process_text'
+          : 'http://127.0.0.1:8080/process_video';
+
+      const res = await axios.post(endpoint, data);
+
+      if (res.data && res.data.answer) {
+        setResponse(res.data);
+      } else {
+        setError('No valid response received.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      setError(error.response?.data?.error || 'An error occurred. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleToggle = () => {
     setMode(mode === 'text' ? 'video' : 'text');
-  };
-
-  const handleSubmit = async () => {
-    if (textInput && question) {
-      const response = await fetch('http://127.0.0.1:8080/answer_query', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          prompt: `${textInput}\n${question}`,
-        }),
-      });
-
-      const data = await response.json();
-      setResponse(data.response);
-    }
   };
 
   return (
@@ -39,60 +57,62 @@ function App() {
             <div className="toggle-text right">Video</div>
           </div>
         </div>
-        {mode === 'video' ? (
-          <div className="input-section">
+        <div className="input-section">
+          {mode === 'video' ? (
             <div className="input-group">
-              <label>Video Input</label>
-              <input 
-                type="text" 
-                placeholder="Enter video URL or details" 
+              <label>Video URL</label>
+              <input
+                type="text"
+                placeholder="Enter YouTube URL"
                 className="custom-input"
+                value={videoUrl}
+                onChange={(e) => setVideoUrl(e.target.value)}
               />
             </div>
-            <div className="input-group">
-              <label>Question</label>
-              <input 
-                type="text" 
-                placeholder="Enter your question" 
-                className="custom-input"
-              />
-            </div>
-            <button className="submit-btn">Submit</button>
-          </div>
-        ) : (
-          <div className="input-section">
+          ) : (
             <div className="input-group">
               <label>Text Input</label>
-              <input 
-                type="text" 
-                placeholder="Enter your text" 
+              <input
+                type="text"
+                placeholder="Enter your text"
                 className="custom-input"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
               />
             </div>
-            <div className="input-group">
-              <label>Question</label>
-              <input 
-                type="text" 
-                placeholder="Enter your question" 
-                className="custom-input"
-                value={question}
-                onChange={(e) => setQuestion(e.target.value)}
-              />
-            </div>
-            <button className="submit-btn" onClick={handleSubmit}>Submit</button>
-            {response && (
-              <div className="response">
-                <h3>Response:</h3>
-                <p>{response}</p>
-              </div>
-            )}
+          )}
+          <div className="input-group">
+            <label>Question</label>
+            <input
+              type="text"
+              placeholder="Enter your question"
+              className="custom-input"
+              value={question}
+              onChange={(e) => setQuestion(e.target.value)}
+            />
           </div>
-        )}
+          <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
+            {loading ? 'Processing...' : 'Submit'}
+          </button>
+          
+          {error && (
+            <div className="error-message">
+              <p>{error}</p>
+            </div>
+          )}
+          
+          {response && (
+            <div className="response">
+              <h3>Response:</h3>
+              <p><strong>Answer:</strong> {response.answer}</p>
+              <p><strong>Sentiment:</strong> {response.sentiment?.label || 'N/A'}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 }
 
 export default App;
+

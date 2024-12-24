@@ -7,11 +7,12 @@
 body {
   font-family: 'Arial', sans-serif;
   background-image: url("background.png");
+  min-height: 100vh;
+  color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  color: #ffffff;
+  padding: 1rem;
 }
 
 .app-container {
@@ -19,36 +20,40 @@ body {
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 100%;
+  max-width: 800px;
+  min-height: min-content;
 }
 
 .content {
   background-color: #202020;
   border-radius: 20px;
-  padding: 40px;
-  width: 400px;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
+  width: 100%;
+  min-width: 280px;
+  max-width: 90vw;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .app-title {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: clamp(1rem, 3vw, 1.875rem);
   background: linear-gradient(45deg, #00d9ff, #0091ff);
   background-clip: text;
+  -webkit-background-clip: text;
   color: transparent;
-  font-size: 28px;
+  font-size: clamp(1.5rem, 4vw, 1.75rem);
 }
 
 .toggle-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: clamp(1rem, 3vw, 1.875rem);
 }
 
 .toggle-wrapper {
   position: relative;
-  width: 250px;
-  height: 60px;
+  width: min(250px, 80%);
+  height: clamp(40px, 8vw, 60px);
   background-color: #2c2c2c;
   border-radius: 50px;
   display: flex;
@@ -80,40 +85,35 @@ body {
   position: relative;
   color: white;
   font-weight: bold;
-}
-
-.toggle-text.left {
-  color: white;
-}
-
-.toggle-text.right {
-  color: white;
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
 }
 
 .input-section {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
 }
 
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: clamp(1rem, 3vw, 1.25rem);
 }
 
 label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 0.5rem;
   color: white;
   font-weight: 900;
-  font-size: 14px;
+  font-size: clamp(0.75rem, 2vw, 0.875rem);
 }
 
 .custom-input {
   width: 100%;
-  padding: 12px;
+  padding: clamp(0.5rem, 2vw, 0.75rem);
   border: 1px solid #0072ff;
   border-radius: 10px;
   background-color: #202020;
   color: #ffffff;
+  font-size: clamp(0.875rem, 2vw, 1rem);
   transition: all 0.3s ease;
 }
 
@@ -126,14 +126,14 @@ label {
 .submit-btn {
   background: linear-gradient(45deg, #000000, #434343);
   color: white;
-  background-clip: text;
   border: 2px solid #00c6ff;
-  padding: 12px;
+  padding: clamp(0.5rem, 2vw, 0.75rem);
   border-radius: 20px;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 0 15px rgba(0, 198, 255, 0.3);
+  font-size: clamp(0.875rem, 2vw, 1rem);
 }
 
 .submit-btn:hover {
@@ -143,4 +143,14 @@ label {
 
 ::placeholder {
   color: #7a7a7a;
+}
+
+@media (max-width: 480px) {
+  .content {
+    padding: 1.25rem;
+  }
+  
+  .toggle-wrapper {
+    width: 90%;
+  }
 }
