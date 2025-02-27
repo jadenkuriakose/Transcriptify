@@ -13,32 +13,32 @@ from functools import lru_cache
 
 load_dotenv()
 ssl._create_default_https_context = ssl._create_unverified_context
-os.environ['PYTHONHTTPSVERIFY'] = '0'
+os.environ['PYTHONHTTPSVERIFY'] = '0' # solved bug issues with SSL certificate 
 
 app = Flask(__name__)
 CORS(app)
 
 class Processor:
     def __init__(self):
-        self.transcriber = whisper.load_model("tiny")
+        self.transcriber = whisper.load_model("tiny") # larger ASR model was too big, causing errors 
         self.use_groq = os.getenv("API_KEY") is not None
         
         if self.use_groq:
-            self.client = groq.Groq(api_key=os.getenv("API_KEY"))
-        else:
+            self.client = groq.Groq(key=os.getenv("API_KEY"))
+        else: # use Mistral AI model if no GROQ API key is provided
             self.model = pipeline(
                 "text-generation",
                 model="mistralai/Mistral-7B-Instruct-v0.2",
                 device=0 if torch.cuda.is_available() else -1
             )
             
-        self.sentiment = pipeline(
+        self.sentiment = pipeline( # BERT for sentiment analysis 
             "sentiment-analysis",
             model="distilbert-base-uncased-finetuned-sst-2-english",
             device=0 if torch.cuda.is_available() else -1
         )
 
-    def chunk(self, text, max_len=1000):
+    def chunk(self, text, max_len=1000): # pull best data from transcript by chunking here then getting the most relevant later
         text = re.sub(r'\s+', ' ', text).strip()
         sentences = re.split(r'(?<=[.!?])\s+', text)
         chunks = []
