@@ -19,7 +19,7 @@ function App() {
     try {
       const data =
         mode === 'text'
-          ? { text: textInput, question }
+          ? { transcript: textInput, question }
           : { video_url: videoUrl, question };
 
       const endpoint =
@@ -35,8 +35,7 @@ function App() {
         setError('No valid response received.');
       }
     } catch (error) {
-      console.error('Error:', error);
-      setError(error.response?.data?.error || 'An error occurred. Please try again.');
+      setError(error.response?.data?.error || 'An error occurred.');
     } finally {
       setLoading(false);
     }
@@ -50,6 +49,7 @@ function App() {
     <div className="app-container">
       <div className="content">
         <h1 className="app-title">Transcriptify</h1>
+
         <div className="toggle-container">
           <div className="toggle-wrapper" onClick={handleToggle}>
             <div className={`toggle-slider ${mode === 'video' ? 'video-mode' : ''}`}></div>
@@ -57,13 +57,13 @@ function App() {
             <div className="toggle-text right">Video</div>
           </div>
         </div>
+
         <div className="input-section">
           {mode === 'video' ? (
             <div className="input-group">
               <label>Video URL</label>
               <input
                 type="text"
-                placeholder="Enter YouTube URL"
                 className="custom-input"
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
@@ -74,38 +74,33 @@ function App() {
               <label>Text Input</label>
               <input
                 type="text"
-                placeholder="Enter your text"
                 className="custom-input"
                 value={textInput}
                 onChange={(e) => setTextInput(e.target.value)}
               />
             </div>
           )}
+
           <div className="input-group">
             <label>Question</label>
             <input
               type="text"
-              placeholder="Enter your question"
               className="custom-input"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
             />
           </div>
+
           <button className="submit-btn" onClick={handleSubmit} disabled={loading}>
             {loading ? 'Processing...' : 'Submit'}
           </button>
-          
-          {error && (
-            <div className="error-message">
-              <p>{error}</p>
-            </div>
-          )}
-          
+
+          {error && <div className="error-message">{error}</div>}
+
           {response && (
             <div className="response">
-              <h3>Response:</h3>
+              <h3>Response</h3>
               <p><strong>Answer:</strong> {response.answer}</p>
-              <p><strong>Sentiment:</strong> {response.sentiment?.label || 'N/A'}</p>
             </div>
           )}
         </div>
@@ -115,4 +110,3 @@ function App() {
 }
 
 export default App;
-
